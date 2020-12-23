@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+}
+
+group 'agh.cs.gameoflife'
+version '1.0-SNAPSHOT'
+
+javafx {
+    version = "15"
+    modules = [ 'javafx.controls' ]
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}

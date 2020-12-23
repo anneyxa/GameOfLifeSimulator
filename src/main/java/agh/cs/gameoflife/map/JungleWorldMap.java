@@ -26,8 +26,6 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
     protected int animalMoveEnergy;
     protected int plantEnergy;
 
-//    protected List<Animal> animalsDead;
-
     protected Map<Vector2d, Plant> plantsFields;
     protected List<IAnimalPlantObserver> observers;
     private int animalsNumber;
@@ -42,7 +40,6 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
         this.plantsFields = new ConcurrentHashMap<>();
         this.animalInitEnergy = animalInitEnergy;
         this.animalMoveEnergy = animalMoveEnergy;
-//        this.animalsDead = Collections.synchronizedList(new LinkedList<>());
 
         this.plantEnergy = plantEnergy;
         this.animalsNumber = animalsNumber;
@@ -219,7 +216,11 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
         observers.remove(observer);
     }
 
-//    public List<Animal> getAnimalsDead() {
-//        return animalsDead;
-//    }
+    public int getAnimalsNumber() {
+        return animalsNumber;
+    }
+
+    public int getPlantsNumber() {
+        return plantsNumber;
+    }
 }

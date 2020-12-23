@@ -9,7 +9,7 @@ public class LocalStorageImpl {
             "gamedata.txt"
     );
 
-    public void updateGameData(WorldGame game) throws IOException {
+    public void updateGameData(GameInfo game) throws IOException {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(GAME_DATA);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -20,11 +20,11 @@ public class LocalStorageImpl {
         }
     }
 
-    public WorldGame getGameData() throws IOException {
+    public GameInfo getGameData() throws IOException {
         FileInputStream fileInputStream = new FileInputStream(GAME_DATA);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         try {
-            WorldGame gameState = (WorldGame) objectInputStream.readObject();
+            GameInfo gameState = (GameInfo) objectInputStream.readObject();
             objectInputStream.close();
             return gameState;
         } catch (IOException | ClassNotFoundException e) {

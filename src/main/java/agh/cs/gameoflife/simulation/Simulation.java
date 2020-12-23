@@ -17,20 +17,19 @@ public class Simulation implements IEngine {
     private double t = 0;
     int day;
 
-    public Simulation(Stage primaryStage){
-        this.day = 0;
+    public Simulation(Stage primaryStage, JungleWorldMap map){
+        //logic settings
         this.localStorageImpl = new LocalStorageImpl();
-        this.map = new JungleWorldMap(5, 3, 10, 10, (float) 0.5,
-                3, 1, 1);
+        this.map = map;
         this.uiImpl = new UserInterfaceImpl(primaryStage, this.map, this);
         IUserInterfaceContract.EventListener uiLogic = new ControlLogic(this.uiImpl);
         this.uiImpl.setListener(uiLogic);
-        this.setGameState(GameState.RUNNING);
-
         this.map.addObserver((IAnimalPlantObserver) this.uiImpl);
-
-        this.map.initAnimals(3);
-        this.map.initPlants(5);
+        //world init
+        this.setGameState(GameState.RUNNING);
+        this.map.initAnimals(this.map.getAnimalsNumber());
+        this.map.initPlants(this.map.getPlantsNumber());
+        this.day = 0;
         System.out.println("___________________________________RUN_______________________________________");
         timer = new AnimationTimer() {
             @Override
@@ -62,16 +61,16 @@ public class Simulation implements IEngine {
     public void run() {
         t += 0.1; //slow down
         if( t >= 5 ){
-            day++;
+            this.day++;
+            this.map.handleDeadAnimals();
             this.map.moveAnimals();
             this.map.animalsEatGrass();
+            //copulation
             this.map.placePlantRandom();
             this.map.placePlantIntoJungle();
-            this.map.handleDeadAnimals();
-            //coopulate
             this.uiImpl.updateBoard();
 
-            System.out.println("---------------------------------------DAY: " + day + " --------------------------------------------------");
+            System.out.println("---------------------------------------DAY: " + this.day + " --------------------------------------------------");
             t = 0;
         }
     }

@@ -1,6 +1,6 @@
 # GameOfLifeSimulator
 
-## Using: Java 8 with JavaFX
+## Using: Java 8 and JavaFX with Gradle
 
 ### Project for object oriented programming.
 This is a simulator of animals' day by day cycle in 2D world. World consists of steppe and jungle, where plants grows faster.

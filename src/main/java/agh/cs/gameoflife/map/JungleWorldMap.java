@@ -73,14 +73,20 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
 
     public void initPlants(int grassNumber){
         for(int i=0; i<grassNumber; i++){
-            this.placePlantRandom();
+            placePlantRandom();
         }
     }
 
-    public void initAnimals(int animalsNumber) {
-        for(int i=1; i<=animalsNumber; i++){
-            this.placeAnimalRandom(i);
+    public int initAnimalsAtMiddle(int animalsNumber) {
+        Vector2d middle = new Vector2d(this.width/2, this.height/2);
+        int i;
+        for(i=1; i<=animalsNumber; i++){
+            System.out.println("Init animal");
+            Animal animal = new Animal(this, middle, this.animalInitEnergy, this.animalMoveEnergy, i);
+            placeAnimal(animal);
+            this.animalPlaced(animal);
         }
+        return i;
     }
 
     public void placeAnimalRandom(int animalID){

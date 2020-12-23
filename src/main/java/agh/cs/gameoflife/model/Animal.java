@@ -19,7 +19,7 @@ public class Animal extends Rectangle implements IMapElement {
     private int energy;
     private int moveEnergy;
     private int defaultEnergy;
-    private Genes genes;
+    private List<Integer> genes;
 
     public Animal(IWorldMap map, Vector2d initialPosition, int animalID){
         this.animalID = animalID;
@@ -27,7 +27,7 @@ public class Animal extends Rectangle implements IMapElement {
         this.position = initialPosition;
         this.map = map;
         this.observers = new ArrayList<>();
-        this.genes = new Genes();
+        this.genes = GenesManager.initGenes();
         this.energy = 20;
         this.defaultEnergy = 20;
         this.moveEnergy = 1;
@@ -72,8 +72,8 @@ public class Animal extends Rectangle implements IMapElement {
         this.energy = energy;
     }
 
-    public Genes getGenes() {
-        return genes;
+    public List<Integer> getGenes() {
+        return this.genes;
     }
 
     public int getAnimalID() {
@@ -110,7 +110,7 @@ public class Animal extends Rectangle implements IMapElement {
     }
 
     private void rotate(){ // increment +1 means always +45 degrees
-        int numberOfTurns = this.genes.getRandGene();
+        int numberOfTurns = GenesManager.getRandGene(this.genes);
         MapDirection direction = this.direction;
         for(int i=0; i<numberOfTurns; i++){
             this.direction = direction.next();

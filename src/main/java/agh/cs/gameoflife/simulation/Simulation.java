@@ -14,6 +14,7 @@ public class Simulation implements IEngine {
     private JungleWorldMap map;
     private AnimationTimer timer;
     private GameState gameState;
+    private int lastAnimalIDHolder;
     private double t = 0;
     int day;
 
@@ -25,10 +26,11 @@ public class Simulation implements IEngine {
         IUserInterfaceContract.EventListener uiLogic = new ControlLogic(this.uiImpl);
         this.uiImpl.setListener(uiLogic);
         this.map.addObserver((IAnimalPlantObserver) this.uiImpl);
+        this.lastAnimalIDHolder = 0;
         //world init
         this.setGameState(GameState.RUNNING);
-        this.map.initAnimals(this.map.getAnimalsNumber());
         this.map.initPlants(this.map.getPlantsNumber());
+        this.lastAnimalIDHolder = this.map.initAnimalsAtMiddle(this.map.getAnimalsNumber());
         this.day = 0;
         System.out.println("___________________________________RUN_______________________________________");
         timer = new AnimationTimer() {

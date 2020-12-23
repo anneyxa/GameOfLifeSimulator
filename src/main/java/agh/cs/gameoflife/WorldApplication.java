@@ -16,7 +16,7 @@ public class WorldApplication extends Application {
 
     @Override
     public void start(Stage primaryStage){
-        this.map = new JungleWorldMap(5, 3, 10, 10, (float) 0.5, 3, 1, 1);
+        this.map = new JungleWorldMap(5, 10, 10, 10, (float) 0.5, 5, 1, 1);
         Simulation simulation = new Simulation(primaryStage, this.map);
         simulation.startSimulation();
     }

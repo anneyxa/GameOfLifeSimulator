@@ -37,11 +37,15 @@ public class GameInfo implements Serializable {
     }
 
     public void setAverageAnimalsEnergy(List<Animal> animalsAlive) {
-        int sum = 0;
-        for(Animal animal : animalsAlive){
-            sum += animal.getEnergy();
+        if(animalsAlive != null && !animalsAlive.isEmpty()){
+            int sum = 0;
+            for(Animal animal : animalsAlive){
+                sum += animal.getEnergy();
+            }
+            this.averageAnimalsEnergy = sum / this.animalsAlive;
+        }else{
+            this.averageAnimalsEnergy = 0;
         }
-        this.averageAnimalsEnergy = sum / this.animalsAlive;
     }
 
     public void setDayNumber(int dayNumber) {

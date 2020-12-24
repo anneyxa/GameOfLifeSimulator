@@ -29,7 +29,7 @@ public class WorldApplication extends Application {
                 inputData.getPlantEnergy()
         );
 
-        Simulation simulation = new Simulation(primaryStage, this.map);
+        Simulation simulation = new Simulation(primaryStage, this.map, inputData.getEpochFrequency());
         simulation.startSimulation();
     }
 }

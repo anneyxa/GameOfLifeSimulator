@@ -6,5 +6,6 @@
   "jungleRatio": 0.5,
   "animalInitEnergy": 30,
   "animalMoveEnergy": 1,
-  "plantEnergy": 3
+  "plantEnergy": 3,
+  "epochFrequency": 10
 }

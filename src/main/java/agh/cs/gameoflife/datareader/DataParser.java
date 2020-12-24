@@ -15,6 +15,7 @@ public class DataParser {
     private int animalInitEnergy;
     private int animalMoveEnergy;
     private int plantEnergy;
+    private int epochFrequency;
 
 
     public static DataParser readDataFromJson(String path) {
@@ -40,6 +41,7 @@ public class DataParser {
         if(this.animalInitEnergy < 0){ throw new IllegalArgumentException(ExceptionMessages.INVALID_ANIMAL_INIT_ENERGY);}
         if(this.animalMoveEnergy < 0){ throw new IllegalArgumentException(ExceptionMessages.INVALID_ANIMAL_MOVE_ENERGY);}
         if(this.plantEnergy < 0){ throw new IllegalArgumentException(ExceptionMessages.INVALID_PLANT_ENERGY_CONSUMED);}
+        if(this.epochFrequency <= 0){ throw new IllegalArgumentException(ExceptionMessages.INVALID_EPOCH_FREQUENCY);}
     }
 
     public int getPlantsNumber() {
@@ -72,6 +74,14 @@ public class DataParser {
 
     public int getPlantEnergy() {
         return plantEnergy;
+    }
+
+    public int getEpochFrequency() {
+        return epochFrequency;
+    }
+
+    public void setEpochFrequency(int epochFrequency) {
+        this.epochFrequency = epochFrequency;
     }
 
     public void setPlantsNumber(int plantsNumber) {

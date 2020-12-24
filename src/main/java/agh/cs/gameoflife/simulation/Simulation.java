@@ -6,29 +6,31 @@ import agh.cs.gameoflife.view.*;
 import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 
 public class Simulation implements ISimulation {
 
-    private IUserInterfaceContract.View uiImpl;
-    private LocalStorageImpl localStorageImpl;
+    private IUserInterfaceContract uiImpl;
+    private LocalStorage localStorage;
     private JungleWorldMap map;
     private AnimationTimer timer;
     private GameState gameState;
     private GameInfo gameInfo;
     private int lastAnimalIDHolder;
     private double t = 0;
+    private int epochFrequency;
     int day;
 
-    public Simulation(Stage primaryStage, JungleWorldMap map){
+    public Simulation(Stage primaryStage, JungleWorldMap map, int epochFrequency){
 
         //logic settings
-        this.localStorageImpl = new LocalStorageImpl();
+        this.localStorage = new LocalStorage();
         this.map = map;
         this.uiImpl = new UserInterfaceImpl(primaryStage, this.map, this);
-        IUserInterfaceContract.EventListener uiLogic = new ControlLogic(this.uiImpl);
-        this.uiImpl.setListener(uiLogic);
         this.map.addObserver((IAnimalPlantObserver) this.uiImpl);
         this.lastAnimalIDHolder = 0;
+        this.epochFrequency = epochFrequency;
 
         //world init
         this.setGameState(GameState.RUNNING);
@@ -82,6 +84,15 @@ public class Simulation implements ISimulation {
             this.uiImpl.updateBoard();
             this.updateGameInfo();
             this.uiImpl.updateStatistics(this.gameInfo);
+
+            if(this.day % this.epochFrequency == 0){  // co epoke zapis danych do pliku
+                try {
+                    this.localStorage.updateGameData(this.gameInfo);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             t = 0;
         }
     }
@@ -94,7 +105,7 @@ public class Simulation implements ISimulation {
         this.gameInfo.setDayNumber(this.day);
     }
 
-    public LocalStorageImpl getLocalStorageImpl() {
-        return localStorageImpl;
+    public LocalStorage getLocalStorage() {
+        return localStorage;
     }
 }

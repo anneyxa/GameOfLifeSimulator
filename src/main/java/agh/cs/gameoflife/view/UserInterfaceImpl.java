@@ -24,14 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 
-public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPlantObserver {
+public class UserInterfaceImpl implements IUserInterfaceContract, IAnimalPlantObserver {
 
     private final Stage stage;
     private final Group root;
 
     public JungleWorldMap map;
-
-    private IUserInterfaceContract.EventListener listener;
 
     private static final double WINDOW_Y = 800;
     private static final double WINDOW_X = 1200;
@@ -147,11 +145,6 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
         Scene scene = new Scene(root, WINDOW_X, WINDOW_Y);
         scene.setFill(WINDOW_BACKGROUND_COLOR);
         stage.setScene(scene);
-    }
-
-    @Override
-    public void setListener(IUserInterfaceContract.EventListener listener) {
-        this.listener = listener;
     }
 
     @Override

@@ -8,10 +8,7 @@ import agh.cs.gameoflife.model.Plant;
 import agh.cs.gameoflife.model.Vector2d;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -25,6 +22,7 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
     protected int animalInitEnergy;
     protected int animalMoveEnergy;
     protected int plantEnergy;
+    protected int energyToReproduce;
 
     protected Map<Vector2d, Plant> plantsFields;
     protected List<IAnimalPlantObserver> observers;
@@ -40,7 +38,7 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
         this.plantsFields = new ConcurrentHashMap<>();
         this.animalInitEnergy = animalInitEnergy;
         this.animalMoveEnergy = animalMoveEnergy;
-
+        this.energyToReproduce = animalInitEnergy/2;
         this.plantEnergy = plantEnergy;
         this.animalsNumber = animalsNumber;
         this.plantsNumber = plantsNumber;
@@ -77,26 +75,22 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
         }
     }
 
-    public int initAnimalsAtMiddle(int animalsNumber) {
-        Vector2d middle = new Vector2d(this.width/2, this.height/2);
+    public int initAnimals(int animalsNumber) {
         int i;
         for(i=1; i<=animalsNumber; i++){
-            System.out.println("Init animal");
-            Animal animal = new Animal(this, middle, this.animalInitEnergy, this.animalMoveEnergy, i);
-            placeAnimal(animal);
-            this.animalPlaced(animal);
+            System.out.println("Init animal " + i);
+            placeAnimalRandom(i);
         }
         return i;
     }
 
     public void placeAnimalRandom(int animalID){
-        System.out.println("animal placed");
         int iterator = 0;
         int max = width * height;
         while (iterator < max) { //proby umieszczenia zwierzęcia zostana podjete tyle razy, ile jest miejsca na mapie
             Vector2d vector = new Vector2d(ThreadLocalRandom.current().nextInt(0, this.width), ThreadLocalRandom.current().nextInt(0, this.height));
             if (!isOccupied(vector)) {
-                Animal animal = new Animal(this, vector, this.animalInitEnergy, this.animalMoveEnergy, animalID);
+                Animal animal = new Animal(this, vector, animalID, this.animalInitEnergy, this.animalMoveEnergy);
                 placeAnimal(animal);
                 this.animalPlaced(animal);
                 return;
@@ -163,6 +157,27 @@ public class JungleWorldMap extends AbstractWorldMap implements IWorldMap, IAnim
             });
         }
     }
+
+    public void reproduce(int animalID){
+        List<Animal> futureParents = new LinkedList<>();
+        List<Animal> children = new LinkedList<>();
+        for (Map.Entry<Vector2d, List<Animal>> entry : this.animalsPositions.entrySet()){
+            futureParents = entry.getValue();
+            if(futureParents != null && futureParents.size() >= 2){
+                futureParents.sort(Comparator.comparing(Animal::getEnergy));
+                Collections.reverse(futureParents);
+                if((futureParents.get(0).getEnergy() >= this.energyToReproduce) && (futureParents.get(1).getEnergy() >= this.energyToReproduce)){
+                    Animal animal = new Animal(futureParents.get(0), futureParents.get(1), animalID);
+                    this.placeAnimal(animal);
+                    children.add(animal);
+                }
+            }
+        }
+        for (Animal child : children){
+            this.animalPlaced(child);
+        }
+    }
+
 
     @Override
     public void handleDeadAnimals() {

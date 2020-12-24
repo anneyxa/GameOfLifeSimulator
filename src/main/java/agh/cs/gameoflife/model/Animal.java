@@ -6,9 +6,10 @@ import agh.cs.gameoflife.map.interfaces.IWorldMap;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static agh.cs.gameoflife.model.GenesManager.genesNumber;
 
 public class Animal extends Rectangle implements IMapElement {
     private int animalID;
@@ -23,7 +24,7 @@ public class Animal extends Rectangle implements IMapElement {
 
     public Animal(IWorldMap map, Vector2d initialPosition, int animalID){
         this.animalID = animalID;
-        this.direction = MapDirection.NORTH;
+        this.direction = MapDirection.getRandomDirection();
         this.position = initialPosition;
         this.map = map;
         this.observers = new ArrayList<>();
@@ -33,11 +34,43 @@ public class Animal extends Rectangle implements IMapElement {
         this.moveEnergy = 1;
     }
 
-    public Animal(IWorldMap map, Vector2d initialPosition, int energy, int moveEnergy, int animalID){
+    public Animal(IWorldMap map, Vector2d initialPosition, int animalID, int energy, int moveEnergy){
         this(map, initialPosition, animalID);
         this.energy = energy;
         this.defaultEnergy = energy;
         this.moveEnergy = moveEnergy;
+    }
+
+    public Animal(Animal parent1, Animal parent2, int animalID){
+        this.map = parent1.getMap();
+        this.energy = parent1.getEnergy()/4 + parent2.getEnergy()/4;
+        this.moveEnergy = parent1.moveEnergy;
+        this.animalID = animalID;
+        this.observers = new ArrayList<>();
+        this.direction = MapDirection.getRandomDirection();
+        parent1.decreaseEnergy(parent1.getEnergy()/4);
+        parent2.decreaseEnergy(parent2.getEnergy()/4);
+        int divisor1 = ThreadLocalRandom.current().nextInt(0, genesNumber - 1);
+        int divisor2 = ThreadLocalRandom.current().nextInt(divisor1,genesNumber + 1);
+        this.genes = GenesManager.createChildGenes(parent1.getGenes(), parent2.getGenes(), divisor1, divisor2);
+        this.position = parent1.getPosition();
+        int movesNumber = MapDirection.values().length;
+        System.out.println("MOVES NUMBER: " + movesNumber);
+        List<MapDirection> possibleDirections = new ArrayList<>(Arrays.asList((MapDirection.values())));
+        Collections.shuffle(possibleDirections);
+        boolean flag = false;
+        for(MapDirection direction : possibleDirections) {
+            Vector2d futurePosition = this.countPWBCase(parent1.getPosition().add(Objects.requireNonNull(direction.toUnitVector())));
+            if(!parent1.getMap().isOccupied(futurePosition)){
+                this.position = futurePosition;
+                flag = true;
+                break;
+            }
+        }
+        if(!flag){
+            Collections.shuffle(possibleDirections);
+            this.position = this.countPWBCase(parent1.getPosition().add(Objects.requireNonNull(possibleDirections.get(0).toUnitVector())));
+        }
     }
 
     public IWorldMap getMap(){
@@ -96,13 +129,13 @@ public class Animal extends Rectangle implements IMapElement {
                 this.direction = this.direction.previous();
                 break;
             case FORWARD:
-                futurePosition = this.countPWBCase(this.direction.toUnitVector());
+                futurePosition = this.countPWBCase(this.position.add(Objects.requireNonNull(this.direction.toUnitVector())));
                 this.position = futurePosition;
                 this.positionChanged(currentPosition, futurePosition);
                 System.out.println("changed position from: " + currentPosition + " to " + futurePosition);
                 break;
             case BACKWARD:
-                futurePosition = this.countPWBCase(Objects.requireNonNull(this.direction.toUnitVector()).opposite());
+                futurePosition = this.countPWBCase(this.position.add(Objects.requireNonNull(this.direction.toUnitVector()).opposite()));
                 this.position = futurePosition;
                 this.positionChanged(currentPosition, futurePosition);
                 break;
@@ -117,10 +150,8 @@ public class Animal extends Rectangle implements IMapElement {
         }
     }
 
-    private Vector2d countPWBCase(Vector2d moveVector){
-
-        Vector2d vector2d = this.position.add(moveVector);
-        Vector2d outputVector = new Vector2d(vector2d.getX() % this.getMap().getWidth(), vector2d.getY() % this.getMap().getHeight());
+    private Vector2d countPWBCase(Vector2d futurePosition){
+        Vector2d outputVector = new Vector2d(futurePosition.getX() % this.getMap().getWidth(), futurePosition.getY() % this.getMap().getHeight());
 
         if(outputVector.getX() >= 0 && outputVector.getY() >= 0){
             return outputVector;

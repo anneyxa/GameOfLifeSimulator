@@ -1,6 +1,10 @@
 package agh.cs.gameoflife.model;
 
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 public enum MapDirection {
     NORTH,
     NORTHEAST,
@@ -51,6 +55,12 @@ public enum MapDirection {
             case NORTHWEST: return new Vector2d(-1, 1);
         }
         return null;
+    }
+
+    public static MapDirection getRandomDirection(){
+        Random random = new Random();
+        int size = MapDirection.values().length;
+        return Arrays.asList(MapDirection.values()).get(random.nextInt(size));
     }
 
     @Override

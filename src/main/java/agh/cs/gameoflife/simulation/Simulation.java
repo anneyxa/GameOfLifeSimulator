@@ -30,7 +30,7 @@ public class Simulation implements IEngine {
         //world init
         this.setGameState(GameState.RUNNING);
         this.map.initPlants(this.map.getPlantsNumber());
-        this.lastAnimalIDHolder = this.map.initAnimalsAtMiddle(this.map.getAnimalsNumber());
+        this.lastAnimalIDHolder = this.map.initAnimals(this.map.getAnimalsNumber());
         this.day = 0;
         System.out.println("___________________________________RUN_______________________________________");
         timer = new AnimationTimer() {
@@ -61,18 +61,18 @@ public class Simulation implements IEngine {
 
     @Override
     public void run() {
-        t += 0.1; //slow down
+        t += 0.5; //slow down
         if( t >= 5 ){
+            System.out.println("---------------------------------------DAY: " + this.day + " --------------------------------------------------");
             this.day++;
+            this.lastAnimalIDHolder++;
             this.map.handleDeadAnimals();
             this.map.moveAnimals();
             this.map.animalsEatGrass();
-            //copulation
+            this.map.reproduce(this.lastAnimalIDHolder);
             this.map.placePlantRandom();
             this.map.placePlantIntoJungle();
             this.uiImpl.updateBoard();
-
-            System.out.println("---------------------------------------DAY: " + this.day + " --------------------------------------------------");
             t = 0;
         }
     }

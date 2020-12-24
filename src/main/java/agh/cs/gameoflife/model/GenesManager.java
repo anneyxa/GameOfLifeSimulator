@@ -12,6 +12,7 @@ public class GenesManager { //Genes managing
         for(int i=0; i<genesNumber; i++){
             genes.add(ThreadLocalRandom.current().nextInt(0, 8));
         }
+        Collections.sort(genes);
         updateGenesToHaveAllOptions(genes);
         return genes;
     }
@@ -22,7 +23,6 @@ public class GenesManager { //Genes managing
     }
 
     public static void updateGenesToHaveAllOptions(List<Integer> genes){
-        Collections.sort(genes);
         for(int i = 0; i<8; i++) {
             if(!genes.contains(i)) {
                 genes.set(getMostCommonGeneIndex(genes), i);
@@ -47,22 +47,20 @@ public class GenesManager { //Genes managing
         return genes.indexOf(max.getKey());
     }
 
-    public static List<Integer> recombineDNA(List<Integer> genes1, List<Integer> genes2) {
+    public static List<Integer> createChildGenes(List<Integer> genes1, List<Integer> genes2, int divisor1, int divisor2) {
         Collections.sort(genes1);
         Collections.sort(genes2);
-        int divisor1 = ThreadLocalRandom.current().nextInt(0,genesNumber - 1);
-        int divisor2 = ThreadLocalRandom.current().nextInt(divisor1,genesNumber + 1);
-        List<Integer> dna = new ArrayList<>();
+        List<Integer> genes = new ArrayList<>();
         for(int i = 0; i<divisor1; i++) {
-            dna.add(genes1.get(i));
+            genes.add(genes1.get(i));
         }
         for(int i = divisor1; i<divisor2; i++) {
-            dna.add(genes2.get(i));
+            genes.add(genes2.get(i));
         }
         for(int i = divisor2; i<genesNumber; i++) {
-            dna.add(genes1.get(i));
+            genes.add(genes1.get(i));
         }
-        updateGenesToHaveAllOptions(dna);
-        return dna;
+        updateGenesToHaveAllOptions(genes);
+        return genes;
     }
 }

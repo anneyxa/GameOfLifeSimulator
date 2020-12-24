@@ -7,7 +7,7 @@ import javafx.animation.AnimationTimer;
 import javafx.stage.Stage;
 
 
-public class Simulation implements IEngine {
+public class Simulation implements ISimulation {
 
     private IUserInterfaceContract.View uiImpl;
     private LocalStorageImpl localStorageImpl;
@@ -61,7 +61,7 @@ public class Simulation implements IEngine {
 
     @Override
     public void run() {
-        t += 0.5; //slow down
+        t += 0.3; //slow down
         if( t >= 5 ){
             System.out.println("---------------------------------------DAY: " + this.day + " --------------------------------------------------");
             this.day++;

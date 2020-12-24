@@ -5,8 +5,8 @@ import java.io.*;
 public class LocalStorageImpl {
 
     private static File GAME_DATA = new File(
-            System.getProperty("user.home"),
-            "gamedata.txt"
+            "src/main/resources",
+            "status.txt"
     );
 
     public void updateGameData(GameInfo game) throws IOException {
@@ -16,7 +16,7 @@ public class LocalStorageImpl {
             objectOutputStream.writeObject(game);
             objectOutputStream.close();
         } catch (IOException e) {
-            throw new IOException("Unable to access Game Data");
+            throw new IOException("Unable to access Game Info");
         }
     }
 

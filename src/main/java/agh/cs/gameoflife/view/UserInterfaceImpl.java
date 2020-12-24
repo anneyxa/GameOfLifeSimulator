@@ -34,20 +34,24 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
     private IUserInterfaceContract.EventListener listener;
 
     private static final double WINDOW_Y = 800;
-    private static final double WINDOW_X = 800;
+    private static final double WINDOW_X = 1200;
     private static final double BOARD_PADDING_X = 50;
     private static final double BOARD_PADDING_Y = 50;
+    private static double STATISTICS_X;
+    private static double STATISTICS_Y;
     private static double BOARD_WIDTH;
     private static double JUNGLE_BOARD_WIDTH;
     private static double BOARD_HEIGHT;
     private static double JUNGLE_BOARD_HEIGHT;
     private static double SCALE;
 
+
     private static final Color WINDOW_BACKGROUND_COLOR = Color.rgb(255, 255, 255);
     private static final Color BOARD_BACKGROUND_COLOR = Color.rgb(189, 189, 189);
     private static final Color JUNGLE_BACKGROUND_COLOR = Color.rgb(122, 120,122);
     private static final String WORLD = "Game of life";
     private Simulation simulation;
+    private Text statistics;
 
     public UserInterfaceImpl(Stage stage, JungleWorldMap map, Simulation simulation) {
         this.simulation = simulation;
@@ -60,6 +64,8 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
         BOARD_HEIGHT = map.getHeight() * SCALE;
         JUNGLE_BOARD_WIDTH = map.getJungleWidth() * SCALE;
         JUNGLE_BOARD_HEIGHT = map.getJungleHeight() * SCALE;
+        STATISTICS_X = BOARD_PADDING_X * 2 + BOARD_WIDTH;
+        STATISTICS_Y = BOARD_PADDING_Y * 2;
         initializeUserInterface();
     }
 
@@ -81,6 +87,7 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
         drawTitle(root);
         drawWorldBoard(root);
         drawJungle(root);
+        this.statistics = addStatistics(root);
         root.requestFocus();
         stage.show();
     }
@@ -109,13 +116,30 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
     }
 
     private void drawTitle(Group root) {
-        Text title = new Text(235, 690, WORLD);
+        Text title = new Text(200, 500, WORLD);
         title.setFill(Color.BLACK);
-        Font titleFont = new Font(43);
-        title.setFont(titleFont);
+        title.setFont(new Font(50));
         title.setX(BOARD_PADDING_X);
         title.setY(BOARD_HEIGHT + 2 * BOARD_PADDING_Y);
         root.getChildren().add(title);
+    }
+
+    private Text addStatistics(Group root){
+        Text statistics = new Text(STATISTICS_X, STATISTICS_Y, "");
+        statistics.setFill(Color.BLACK);
+        statistics.setFont(new Font(25));
+        statistics.setX(STATISTICS_X);
+        statistics.setY(STATISTICS_Y);
+        root.getChildren().add(statistics);
+        return statistics;
+    }
+
+    public void updateStatistics(GameInfo gameInfo){
+        this.statistics.setText(gameInfo.toString());
+    }
+
+    public void drawLegend(){
+        Text legend = new Text("....");
     }
 
     private void drawBackground(Group root) {
@@ -148,16 +172,8 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
     public void dialogHandle(String message) {
         Alert dialog = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         dialog.showAndWait();
-//        listener.onDialogCLick();
         if(dialog.getResult() == ButtonType.OK) this.simulation.startSimulation();
     }
-
-    @Override
-    public void showError(String message) {
-        Alert dialog = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        dialog.showAndWait();
-    }
-
 
     @Override
     public void placeAnimalOnBoard(Animal animal){

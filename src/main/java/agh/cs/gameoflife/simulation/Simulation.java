@@ -14,11 +14,13 @@ public class Simulation implements ISimulation {
     private JungleWorldMap map;
     private AnimationTimer timer;
     private GameState gameState;
+    private GameInfo gameInfo;
     private int lastAnimalIDHolder;
     private double t = 0;
     int day;
 
     public Simulation(Stage primaryStage, JungleWorldMap map){
+
         //logic settings
         this.localStorageImpl = new LocalStorageImpl();
         this.map = map;
@@ -27,11 +29,16 @@ public class Simulation implements ISimulation {
         this.uiImpl.setListener(uiLogic);
         this.map.addObserver((IAnimalPlantObserver) this.uiImpl);
         this.lastAnimalIDHolder = 0;
+
         //world init
         this.setGameState(GameState.RUNNING);
         this.map.initPlants(this.map.getPlantsNumber());
         this.lastAnimalIDHolder = this.map.initAnimals(this.map.getAnimalsNumber());
         this.day = 0;
+
+        //game info init
+        this.gameInfo = new GameInfo(this.map.getAnimals(), this.map.getAnimalsDead(), this.map.getPlantsFields(), day);
+
         System.out.println("___________________________________RUN_______________________________________");
         timer = new AnimationTimer() {
             @Override
@@ -73,8 +80,18 @@ public class Simulation implements ISimulation {
             this.map.placePlantRandom();
             this.map.placePlantIntoJungle();
             this.uiImpl.updateBoard();
+            this.updateGameInfo();
+            this.uiImpl.updateStatistics(this.gameInfo);
             t = 0;
         }
+    }
+
+    public void updateGameInfo(){
+        this.gameInfo.setAnimalsAlive(this.map.getAnimals());
+        this.gameInfo.setAnimalsDead(this.map.getAnimalsDead());
+        this.gameInfo.setCurrentPlantsNumber(this.map.getPlantsFields());
+        this.gameInfo.setAverageAnimalsEnergy(this.map.getAnimals());
+        this.gameInfo.setDayNumber(this.day);
     }
 
     public LocalStorageImpl getLocalStorageImpl() {

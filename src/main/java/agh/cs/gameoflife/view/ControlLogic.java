@@ -9,17 +9,7 @@ public class ControlLogic implements IUserInterfaceContract.EventListener {
     }
 
     @Override
-    public void onUpdatePositions() {
-        System.out.println("POSITION CHANGE");
-    }
-
-    @Override
-    public void onButtonCLick() {
-        System.out.println("BUTTON CLICK");
-    }
-
-    @Override
-    public void onDialogCLick() {
-//        this.view.
+    public void onAnimalClick() {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 }

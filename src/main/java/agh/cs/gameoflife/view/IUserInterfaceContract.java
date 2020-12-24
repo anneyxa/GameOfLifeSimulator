@@ -6,9 +6,7 @@ import agh.cs.gameoflife.model.Plant;
 
 public interface IUserInterfaceContract {
     interface  EventListener {
-        void onUpdatePositions();
-        void onButtonCLick();
-        void onDialogCLick();
+        void onAnimalClick();
     }
 
     interface View {
@@ -17,6 +15,6 @@ public interface IUserInterfaceContract {
         void placeAnimalOnBoard(Animal animal);
         void placePlantOnBoard(Plant plant);
         void dialogHandle(String message);
-        void showError(String message);
+        void updateStatistics(GameInfo gameInfo);
     }
 }

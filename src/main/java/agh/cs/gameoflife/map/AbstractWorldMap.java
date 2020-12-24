@@ -16,6 +16,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     protected Vector2d upperRight;
 
     protected Map<Vector2d, List<Animal>> animalsPositions;
+
     protected List<Animal> animals; //just to move animals
 
     public AbstractWorldMap(int width, int height){
@@ -82,5 +83,9 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
     public Map<Vector2d, List<Animal>> getAnimalsPositions(){
         return this.animalsPositions;
+    }
+
+    public List<Animal> getAnimals() {
+        return animals;
     }
 }

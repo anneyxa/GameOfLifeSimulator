@@ -52,7 +52,7 @@ public class GameInfo implements Serializable {
     public String toString() {
         return "Statistics: \n" +
                 "\n Alive animals number: " + animalsAlive +
-                "\n Dead animals number:" + animalsDead +
+                "\n Dead animals number: " + animalsDead +
                 "\n Current plants number: " + currentPlantsNumber +
                 "\n averageAnimalsEnergy: " + averageAnimalsEnergy +
                 "\n dayNumber: " + dayNumber;

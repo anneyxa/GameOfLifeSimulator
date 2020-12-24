@@ -39,6 +39,8 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
     private static final double BOARD_PADDING_Y = 50;
     private static double STATISTICS_X;
     private static double STATISTICS_Y;
+    private static double LEGEND_X;
+    private static double LEGEND_Y;
     private static double BOARD_WIDTH;
     private static double JUNGLE_BOARD_WIDTH;
     private static double BOARD_HEIGHT;
@@ -66,6 +68,8 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
         JUNGLE_BOARD_HEIGHT = map.getJungleHeight() * SCALE;
         STATISTICS_X = BOARD_PADDING_X * 2 + BOARD_WIDTH;
         STATISTICS_Y = BOARD_PADDING_Y * 2;
+        LEGEND_X = STATISTICS_X;
+        LEGEND_Y = STATISTICS_Y * 3;
         initializeUserInterface();
     }
 
@@ -88,6 +92,7 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
         drawWorldBoard(root);
         drawJungle(root);
         this.statistics = addStatistics(root);
+        drawLegend(root);
         root.requestFocus();
         stage.show();
     }
@@ -138,10 +143,6 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
         this.statistics.setText(gameInfo.toString());
     }
 
-    public void drawLegend(){
-        Text legend = new Text("....");
-    }
-
     private void drawBackground(Group root) {
         Scene scene = new Scene(root, WINDOW_X, WINDOW_Y);
         scene.setFill(WINDOW_BACKGROUND_COLOR);
@@ -166,13 +167,6 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
                 a.setFill(a.color());
             });
         }
-    }
-
-    @Override
-    public void dialogHandle(String message) {
-        Alert dialog = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
-        dialog.showAndWait();
-        if(dialog.getResult() == ButtonType.OK) this.simulation.startSimulation();
     }
 
     @Override
@@ -223,7 +217,85 @@ public class UserInterfaceImpl implements IUserInterfaceContract.View, IAnimalPl
         this.placeAnimalOnBoard(animal);
     }
 
+    @Override
+    public void dialogHandle(String message) {
+        Alert dialog = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        dialog.showAndWait();
+        if(dialog.getResult() == ButtonType.OK) this.simulation.startSimulation();
+    }
+
     public JungleWorldMap getMap() {
         return this.map;
+    }
+
+    private void drawLegend(Group root){
+        drawLegendSteppe(root);
+        drawLegendJungle(root);
+        drawLegendAnimal(root);
+        drawLegendPlant(root);
+    }
+
+    private void drawLegendSteppe(Group root){
+        Rectangle backgroundLegend = new Rectangle();
+        backgroundLegend.setX(LEGEND_X);
+        backgroundLegend.setY(LEGEND_Y);
+        backgroundLegend.setHeight(50);
+        backgroundLegend.setWidth(50);
+        backgroundLegend.setFill(BOARD_BACKGROUND_COLOR);
+        Text backgroundLegendText = new Text();
+        backgroundLegendText.setText(" - Steppe board");
+        backgroundLegendText.setFont(new Font(22));
+        backgroundLegendText.setFill(Color.BLACK);
+        backgroundLegendText.setX(LEGEND_X + BOARD_PADDING_X);
+        backgroundLegendText.setY(LEGEND_Y + backgroundLegend.getWidth()/2+5);
+        root.getChildren().addAll(backgroundLegend, backgroundLegendText);
+    }
+
+    private void drawLegendJungle(Group root){
+        Rectangle jungleLegend = new Rectangle();
+        jungleLegend.setX(LEGEND_X);
+        jungleLegend.setY(LEGEND_Y + BOARD_PADDING_Y + 10);
+        jungleLegend.setHeight(50);
+        jungleLegend.setWidth(50);
+        jungleLegend.setFill(JUNGLE_BACKGROUND_COLOR);
+        Text jungleLegendText = new Text();
+        jungleLegendText.setText(" - Jungle board");
+        jungleLegendText.setFont(new Font(22));
+        jungleLegendText.setFill(Color.BLACK);
+        jungleLegendText.setX(LEGEND_X + BOARD_PADDING_X);
+        jungleLegendText.setY(LEGEND_Y + BOARD_PADDING_Y + jungleLegend.getWidth()/2 + 15);
+        root.getChildren().addAll(jungleLegend, jungleLegendText);
+    }
+
+    private void drawLegendAnimal(Group root){
+        Rectangle animalLegend = new Rectangle();
+        animalLegend.setX(LEGEND_X);
+        animalLegend.setY(LEGEND_Y + 2*(BOARD_PADDING_Y + 10));
+        animalLegend.setHeight(50);
+        animalLegend.setWidth(50);
+        animalLegend.setFill(Color.rgb(14, 137, 204));
+        Text animalLegendText = new Text();
+        animalLegendText.setText(" - Animal default color. \n (When loses energy -> yellow.\n When gains, -> purple)");
+        animalLegendText.setFont(new Font(22));
+        animalLegendText.setFill(Color.BLACK);
+        animalLegendText.setX(LEGEND_X + BOARD_PADDING_X);
+        animalLegendText.setY(LEGEND_Y + 2*BOARD_PADDING_Y + animalLegend.getWidth()/2 + 25);
+        root.getChildren().addAll(animalLegend, animalLegendText);
+    }
+
+    private void drawLegendPlant(Group root){
+        Rectangle plantField = new Rectangle();
+        plantField.setX(LEGEND_X);
+        plantField.setY(LEGEND_Y + 3*(BOARD_PADDING_Y + 20));
+        plantField.setHeight(50);
+        plantField.setWidth(50);
+        plantField.setFill(Color.GREEN);
+        Text plantFieldText = new Text();
+        plantFieldText.setText(" - Plant color");
+        plantFieldText.setFont(new Font(22));
+        plantFieldText.setFill(Color.BLACK);
+        plantFieldText.setX(LEGEND_X + BOARD_PADDING_X);
+        plantFieldText.setY(LEGEND_Y + 3*BOARD_PADDING_Y + plantField.getWidth()/2 + 70);
+        root.getChildren().addAll(plantField, plantFieldText);
     }
 }
